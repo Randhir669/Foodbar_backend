@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3004;
 
 app.use(express.json());
 app.use(cors());
@@ -71,10 +71,9 @@ app.post('/placedorders', (req, res) => {
 
 
     const { cartItems } = req.body;
-
     for (let i = 0; i < cartItems.length; i++) {
-      const query = 'INSERT INTO "CartItems" (foodid,name,category,isexpanded,cost,cart,imageurl,food_desc,orderid) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9)';
-      const values = [cartItems[i].id, cartItems[i].name, cartItems[i].category, cartItems[i].isExpanded, cartItems[i].cost, cartItems[i].cart, cartItems[i].imageUrl, cartItems[i].desc, orderId];
+      const query = 'INSERT INTO "AllCartItems" (foodid,name,category,isexpanded,cost,cart,imageurl,food_desc,orderid,phoneno) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10)';
+      const values = [cartItems[i].id, cartItems[i].name, cartItems[i].category, cartItems[i].isExpanded, cartItems[i].cost, cartItems[i].cart, cartItems[i].imageUrl, cartItems[i].desc, orderId,phone];
 
       pool.query(query, values, (error, result) => {
         if (error) {
@@ -100,9 +99,10 @@ app.get('/getallorders/:id', (req, res) => {
   });
 });
 
-app.get('/getallcartsitems/:id', (req, res) => {
+
+app.get('/getallcartsitems', (req, res) => {
   let id = req.params.id; // Corrected to req.params.id
-  pool.query('SELECT * FROM "CartItems" WHERE orderid = $1', [id], (error, result) => {
+  pool.query('SELECT * FROM "AllCartItems"', (error, result) => {
     if (error) {
       console.error('Error fetching users:', error);
       res.status(500).json({ error: 'Error fetching todos' });
